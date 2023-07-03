@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carrito</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://api.mqcdn.com/sdk/place-search-js/v1.0.0/place-search.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/place-search-js/v1.0.0/place-search.css" />
+    <!-- Replace "test" with your own sandbox Business account app client ID -->
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AQqzld6tAD4oeVjQXHGjDv06BSKvOBPBMoa1qRQF8eTLuRUbzDinavy8W2le8EmFe0zs8W5CrDdyv6aV&currency=USD">
+    </script>
+</head>
+
+<body>
+    <header class="mb-5">
+        <nav class="navbar navbar-light bg-light fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand">Carrito</a>
+                <form class="d-flex">
+                    <!-- carrito -->
+                    <button class="btn btn-dark position-relative" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-cart"
+                            viewBox="0 0 16 16">
+                            <path
+                                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                        </svg><span id="carritoCantidad"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            +
+                            <span class="visually-hidden">Carrito</span>
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- carrito -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Carrito de compras</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body container">
+            <div>
+                <h2 class="text-center">Compra</h2>
+            </div>
+            <div class="row container-fluid">
+                <table id="Inventario" class="table col-12">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="d-none">id</th>
+                            <th scope="col">
+                                <p class="text-center">Img</p>
+                            </th>
+                            <th scope="col">
+                                <p class="text-center">Descripción</p>
+                            </th>
+                            <th scope="col">
+                                <p class="text-center">Precio</p>
+                            </th>
+                            <th scope="col" colspan="3">
+                                <p class="text-center">Cantidad</p>
+                            </th>
+                            <th scope="col">
+                                <p class="text-center">Total parcial</p>
+                            </th>
+                            <th scope="col">
+                                <p class="text-center">Eliminar</p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyInventario" class="p-5">
+                    </tbody>
+                    <tr id="seccionComprar" class="mt-3">
+                        <td id="labelTotal">Total:</td>
+                        <td id="total">$0.00 </td>
+                    </tr>
+                </table>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <!-- filtros -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filtros</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- filtros -->
+            <div class="filtrosProductos col-12 align-items-between justify-content-center">
+                <form id="filtro" class="p-5">
+                    <h4 class="col-12">Por categoria:</h4>
+                    <select id="filtrarCategoria" class="mt-3 mb-3 form-select form-select-sm"
+                        aria-label=".form-select-sm example" required>
+                        <option value="0" selected>Selecciona la categoria del producto</option>
+                        <option value="movil">movil</option>
+                        <option value="tablet">tablet</option>
+                        <option value="portatil">portatil</option>
+                        <option value="todos">mostrar todos</option>
+                    </select>
+                    <div class="mb-3 mt-5">
+                        <h4 class="col-12">Por precio:</h4>
+                        <p>Precio minimo</p>
+                        <input id="precioMinimo" type="range" min="0" max="1000" step="1" value="0"
+                            class="form-range col-6" placeholder="Precio mínimo">
+                        <span class="col-6" id="precioMinimoValue">$0</span>
+
+                        <p class="mt-4">Precio maximo</p>
+                        <input id="precioMaximo" type="range" min="0" max="2000" step="1" value="0"
+                            class="form-range col-12 mt-3" placeholder="Precio máximo">
+                        <span id="precioMaximoValue">$0</span>
+
+                    </div>
+                    <div class="row justify-content-center mt-5">
+                        <button id="btnFiltrar" type="button"
+                            class="col-8 mt-2 btn btn-outline-success">Filtrar</button>
+                        <button id="eliminarFiltros" type="button" class="col-8 mt-2 btn btn-outline-success">Eliminar
+                            Filtros</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- paginacion -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end mt-5 pt-3">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="row mt-2 justify-content-center">
+        <!-- ordenar -->
+        <div class="listaProductos">
+            <div class="container-fluid justify-content-around row">
+                <div class="col-6">
+                    <select id="ordenar" class="form-select form-select col-12" aria-label="Default select example">
+                        <option value="0" selected>Ordenar productos</option>
+                        <option value="menor">menor a mayor precio</option>
+                        <option value="mayor">mayor a menor precio</option>
+                        <option value="abc">A-Z</option>
+                    </select>
+                </div>
+                <div class="row align-items-center col-4">
+                    <!-- filtros -->
+                    <button class="col-12 btn btn-dark" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                        Filtrar
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-funnel" viewBox="0 0 16 16">
+                            <path
+                                d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="container row">
+                <div class="filtrosItems">
+
+                </div>
+            </div>
+
+            <!-- productos -->
+            <div class="container-fluid justify-content-center row" id="productosContainer">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Formulario de envio.</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- formulario -->
+                    <div class="container">
+                        <h2>Datos de envío.</h2>
+                        <form id="myForm">
+                            <div class="form-group mt-2">
+                                <label for="nombre">Nombre:</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                <div class="invalid-feedback">Por favor, ingresa tu nombre.</div>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="apellido">Apellido:</label>
+                                <input type="text" class="form-control" id="apellido" name="apellido" required>
+                                <div class="invalid-feedback">Por favor, ingresa tu apellido.</div>
+                            </div>
+                            <div class="form-group" mt-2>
+                                <label for="correo">Correo electrónico:</label>
+                                <input type="email" class="form-control" id="correo" name="correo" required>
+                                <div class="invalid-feedback">Por favor, ingresa un correo válido.</div>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="direccion">Dirección:</label>
+                                <input class="form-control" type="search" placeholder="Ingresa tu direccion..."
+                                    id="direccion" name="direccion" rows="3" required></input>
+                                <div class="invalid-feedback">Por favor, ingresa tu dirección.</div>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="ciudad">Ciudad:</label>
+                                <input type="text" class="form-control" id="ciudad" name="ciudad" required>
+                                <div class="invalid-feedback">Por favor, ingresa tu ciudad.</div>
+                            </div>
+                            <div class="form-group mt-2">
+                                <button type=" submit" href="./pages/carrito.html" name="enviar"
+                                    class="mt-5 btn btn-primary">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Set up a container element for the button -->
+                    <div id="paypal-button-container" class="d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <footer class="footer mt-auto bg-dark text-white">
+        <div class="container text-center">
+            <span class="text-muted">Desarrollado por:</span>
+            <p class="mb-0">
+                <strong>César Augusto Vicci Aparcedo</strong>
+                <br>
+                Desarrollador Frontend
+            </p>
+            <ul class="list-inline social-icons">
+                <li class="list-inline-item">
+                    <a href="#" target="_blank" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module" src="/main.js"></script>
+
+
+</body>
+
+</html>
