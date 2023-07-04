@@ -1,6 +1,6 @@
 // Definir la clase Producto
 export class Orden {
-    constructor(id, nombre, apellido, correo, ciudad, direccion, carrito, total, pagado = false) {
+    constructor(id, nombre, apellido, correo, ciudad, direccion, carrito, total, pagado = false, idPago = '') {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -10,5 +10,6 @@ export class Orden {
         this.carrito = carrito;
         this.total = total;
         this.pagado = pagado;
+        this.idPago = idPago;
     }
 };

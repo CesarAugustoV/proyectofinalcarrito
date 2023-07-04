@@ -6,7 +6,8 @@ const nombreLabel = document.querySelector('#nombreLabel'),
     ciudadLabel = document.querySelector('#ciudadLabel'),
     correoLabel = document.querySelector('#correoLabel'),
     bodyCarrito = document.querySelector('#bodyCarrito'),
-    totalHTML = document.querySelector('#total');
+    totalHTML = document.querySelector('#total'),
+    codigoPago = document.querySelector('#idPago');
 
 
 const cargarFactura = () => {
@@ -20,7 +21,8 @@ const cargarFactura = () => {
         ciudad,
         direccion,
         carrito,
-        total
+        total,
+        idPago
     } = JSON.parse(datos);
 
     
@@ -30,6 +32,8 @@ const cargarFactura = () => {
     direccionLabel.textContent = direccion;
     ciudadLabel.textContent = ciudad;
     correoLabel.textContent = correo;
+    codigoPago.textContent = idPago;
+
 
 
     for (let producto of carrito){

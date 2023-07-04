@@ -548,7 +548,6 @@ placeSearch({
     container: document.querySelector('#direccion')
 });
 
-
 const crearOrden = () => {
 
     const carrito = claseCarrito.consultarProductos();
@@ -567,7 +566,6 @@ const crearOrden = () => {
         let direccion = formData.get('direccion');
 
         const orden = new Orden(uuidv4(), nombre, apellido, correo, ciudad, direccion, carrito, total, false);
-
 
         ordenes.agregarOrden(orden);
 
@@ -590,22 +588,22 @@ const crearOrden = () => {
 
 };
 
-const pagado = () => {
+const pagado = (transaccion) => {
     const carritoHTML = document.querySelector('#bodyInventario');
     const btnPagar = document.querySelector('#btnPagar');
     const paypalButton = document.querySelector('#paypal-button-container');
     const myForm = document.querySelector('#myForm');
     const btnEnviar = document.querySelector('#enviarDatos');
-
+    
     carritoHTML.innerHTML = '';
     btnPagar.remove();
     paypalButton.classList.add('d-none');
     btnEnviar.classList.remove('d-none');
-
+    
     myForm.reset();
-
+    
     const inputs = myForm.querySelectorAll('.form-control');
-
+    
     for (const input of inputs) {
         input.removeAttribute("readonly");
     }
@@ -618,14 +616,20 @@ const pagado = () => {
     actualizarNumeroCarrito();
     guardarLocal('carrito');
     guardarLocal('inventario');
+
+    const orden = JSON.parse(localStorage.getItem('orden'));
+    orden.pagado = true;
+    orden.idPago = transaccion;
+    guardarLocal('orden', orden);
     window.location.href='/factura.html';
 
 };
 
 
 
+
 //PAYPAL
-const paypalPago = paypal
+paypal
     .Buttons({
         // Sets up the transaction when a payment button is clicked
         createOrder: function () {
@@ -637,10 +641,7 @@ const paypalPago = paypal
                     // use the "body" param to optionally pass additional order information
                     // like product skus and quantities
                     body: JSON.stringify({
-                        cart: [{
-                            sku: "YOUR_PRODUCT_STOCK_KEEPING_UNITs",
-                            quantity: "YOUR_PRODUCT_QUANTITYs",
-                        }, ],
+                        cart: claseCarrito.consultarProductos()
                     }),
                 })
                 .then((response) => response.json())
@@ -659,15 +660,20 @@ const paypalPago = paypal
                 })
                 .then((response) => response.json())
                 .then((orderData) => {
+                    const transaction = orderData.purchase_units[0].payments.captures[0];
+                    
                     modalFormulario.hide();
-                    pagado();
+                    
+                    pagado(transaction.id);
+
+
+
                     // Successful capture! For dev/demo purposes:
                     console.log(
                         "Capture result",
                         orderData,
                         JSON.stringify(orderData, null, 2)
                     );
-                    const transaction = orderData.purchase_units[0].payments.captures[0];
                     alert(
                         "Transaction " +
                         transaction.status +
