@@ -548,12 +548,27 @@ placeSearch({
     container: document.querySelector('#direccion')
 });
 
+
+const formatearFormulario = (form) => {
+    form.reset();
+    const inputs = form.querySelectorAll('.form-control');
+    for (const input of inputs) {
+        input.removeAttribute("readonly");
+    };
+    const paypalButton = document.querySelector('#paypal-button-container');
+    const btnEnviar = document.querySelector('#enviarDatos');
+    paypalButton.classList.add('d-none');
+    btnEnviar.classList.remove('d-none');
+};
+
+
 const crearOrden = () => {
 
     const carrito = claseCarrito.consultarProductos();
     const total = claseCarrito.calcularTotal();
 
     const formulario = document.querySelector('#myForm');
+    const cancelarCompra = document.querySelector('#cancelarCompra');
 
     formulario.addEventListener('submit', (ev) => {
 
@@ -570,7 +585,7 @@ const crearOrden = () => {
         ordenes.agregarOrden(orden);
 
         guardarLocal('orden', orden);
-        
+
         ev.preventDefault();
 
         for (const nodo of ev.target) {
@@ -579,35 +594,32 @@ const crearOrden = () => {
 
         // eliminar boton enviar
         ev.target.querySelector('#enviarDatos').classList.add('d-none');
-        
+
         //mostrarbotones de paypal
         document.querySelector('#paypal-button-container').classList.remove("d-none");
-        document.querySelector('#staticBackdropLabel').textContent = 'Metodo de pago';
+        cancelarCompra.classList.remove("d-none");
 
+        document.querySelector('#staticBackdropLabel').textContent = 'Metodo de pago';
+    });
+
+    cancelarCompra.addEventListener('click', () => {
+        formatearFormulario(formulario);
+        modalFormulario.hide();
     });
 
 };
 
+
+
 const pagado = (transaccion) => {
     const carritoHTML = document.querySelector('#bodyInventario');
     const btnPagar = document.querySelector('#btnPagar');
-    const paypalButton = document.querySelector('#paypal-button-container');
     const myForm = document.querySelector('#myForm');
-    const btnEnviar = document.querySelector('#enviarDatos');
-    
+
+    formatearFormulario(myForm);
+
     carritoHTML.innerHTML = '';
     btnPagar.remove();
-    paypalButton.classList.add('d-none');
-    btnEnviar.classList.remove('d-none');
-    
-    myForm.reset();
-    
-    const inputs = myForm.querySelectorAll('.form-control');
-    
-    for (const input of inputs) {
-        input.removeAttribute("readonly");
-    }
-
 
     const compra = claseCarrito.comprarRealizada();
     claseInventario.compraRealizada(compra)
@@ -621,7 +633,7 @@ const pagado = (transaccion) => {
     orden.pagado = true;
     orden.idPago = transaccion;
     guardarLocal('orden', orden);
-    window.location.href='/factura.html';
+    window.location.href = '/factura.html';
 
 };
 
@@ -661,9 +673,9 @@ paypal
                 .then((response) => response.json())
                 .then((orderData) => {
                     const transaction = orderData.purchase_units[0].payments.captures[0];
-                    
+
                     modalFormulario.hide();
-                    
+
                     pagado(transaction.id);
 
 

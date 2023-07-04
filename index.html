@@ -201,7 +201,9 @@
                 <div class="modal-body">
                     <!-- formulario -->
                     <div class="container">
-                        <h2>Datos de envío.</h2>
+                        <div class="mb-5 text-center">
+                            <h2>Datos de envío.</h2>
+                        </div>
                         <form id="myForm">
                             <div class="form-group mt-2">
                                 <label for="nombre">Nombre:</label>
@@ -229,16 +231,17 @@
                                 <input type="text" class="form-control" id="ciudad" name="ciudad" required>
                                 <div class="invalid-feedback">Por favor, ingresa tu ciudad.</div>
                             </div>
-                            <div class="form-group mt-2">
+                            <div class="form-group text-center">
                                 <button type=" submit" href="./pages/carrito.html" id="enviarDatos" name="enviar"
-                                    class="mt-5 btn btn-primary">Enviar</button>
+                                    class="mt-5 btn btn-primary col-8 mb-5">Aceptar</button>
                             </div>
                         </form>
                     </div>
                     <!-- Set up a container element for the button -->
-                    <div id="paypal-button-container" class="d-none"></div>
+                    <div id="paypal-button-container" class="d-none mt-5"></div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-danger d-none" id="cancelarCompra"> Cancelar compra </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
