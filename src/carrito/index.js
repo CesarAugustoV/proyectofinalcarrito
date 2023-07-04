@@ -252,7 +252,7 @@ const eliminarProductoCarrito = (id, event, cantidad) => {
 
     actualizarTotal();
 
-    tr.innerHTML = '';
+    tr.remove();
 
     actualizarStockProductos(id);
     guardarLocal('carrito');
@@ -426,14 +426,9 @@ const agregarProductoCarrito = (id, cantidad) => {
             seccionComprar.appendChild(td);
 
             btnPagar.addEventListener('click', (ev) => {
-
-                const carritoHTML = fila.parentNode;
-
-                const pagado = pagar(carritoHTML);
-
-                if (pagado) {
-                    ev.target.remove();
-                }
+                modalFormulario.show();
+                bsOffcanvas.hide();
+                crearOrden(ev.target);
             });
 
         };
@@ -547,17 +542,17 @@ const cargarLocal = () => {
 
 cargarLocal();
 
+//geolocalizacion
+placeSearch({
+    key: '8WtQWz8eDy1KRZ15W8y9IPsMNU69iNbZ',
+    container: document.querySelector('#direccion')
+});
 
 
-
-const pagar = (input) => {
+const crearOrden = () => {
 
     const carrito = claseCarrito.consultarProductos();
     const total = claseCarrito.calcularTotal();
-
-
-    bsOffcanvas.hide();
-    modalFormulario.show();
 
     const formulario = document.querySelector('#myForm');
 
@@ -571,93 +566,120 @@ const pagar = (input) => {
         let ciudad = formData.get('ciudad');
         let direccion = formData.get('direccion');
 
-        const orden = new Orden('1', nombre, apellido, correo, ciudad, direccion, carrito, total);
+        const orden = new Orden(uuidv4(), nombre, apellido, correo, ciudad, direccion, carrito, total, false);
+
 
         ordenes.agregarOrden(orden);
 
         guardarLocal('orden', orden);
-
+        
         ev.preventDefault();
 
-        const compra = claseCarrito.comprarRealizada();
-        claseInventario.compraRealizada(compra)
+        for (const nodo of ev.target) {
+            nodo.setAttribute("readonly", "");
+        }
 
-        actualizarTotal();
-        actualizarNumeroCarrito();
-        guardarLocal('carrito');
-        guardarLocal('inventario');
-        input.innerHTML = '';
-
-        ev.target.parentNode.remove();
-
+        // eliminar boton enviar
+        ev.target.querySelector('#enviarDatos').classList.add('d-none');
+        
+        //mostrarbotones de paypal
         document.querySelector('#paypal-button-container').classList.remove("d-none");
         document.querySelector('#staticBackdropLabel').textContent = 'Metodo de pago';
+
     });
 
 };
 
-//geolocalizacion
-placeSearch({
-    key: '8WtQWz8eDy1KRZ15W8y9IPsMNU69iNbZ',
-    container: document.querySelector('#direccion')
-});
+const pagado = () => {
+    const carritoHTML = document.querySelector('#bodyInventario');
+    const btnPagar = document.querySelector('#btnPagar');
+    const paypalButton = document.querySelector('#paypal-button-container');
+    const myForm = document.querySelector('#myForm');
+    const btnEnviar = document.querySelector('#enviarDatos');
+
+    carritoHTML.innerHTML = '';
+    btnPagar.remove();
+    paypalButton.classList.add('d-none');
+    btnEnviar.classList.remove('d-none');
+
+    myForm.reset();
+
+    const inputs = myForm.querySelectorAll('.form-control');
+
+    for (const input of inputs) {
+        input.removeAttribute("readonly");
+    }
+
+
+    const compra = claseCarrito.comprarRealizada();
+    claseInventario.compraRealizada(compra)
+
+    actualizarTotal();
+    actualizarNumeroCarrito();
+    guardarLocal('carrito');
+    guardarLocal('inventario');
+    window.location.href='/factura.html';
+
+};
+
+
 
 //PAYPAL
 const paypalPago = paypal
-.Buttons({
-    // Sets up the transaction when a payment button is clicked
-    createOrder: function () {
-        return fetch("/my-server/create-paypal-order", {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                // use the "body" param to optionally pass additional order information
-                // like product skus and quantities
-                body: JSON.stringify({
-                    cart: [{
-                        sku: "YOUR_PRODUCT_STOCK_KEEPING_UNITs",
-                        quantity: "YOUR_PRODUCT_QUANTITYs",
-                    }, ],
-                }),
-            })
-            .then((response) => response.json())
-            .then((order) => order.id);
-    },
-    // Finalize the transaction after payer approval
-    onApprove: function (data) {
-        return fetch("/my-server/capture-paypal-order", {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    orderID: data.orderID,
-                }),
-            })
-            .then((response) => response.json())
-            .then((orderData) => {
-                modalFormulario.hide();
-                
-                // Successful capture! For dev/demo purposes:
-                console.log(
-                    "Capture result",
-                    orderData,
-                    JSON.stringify(orderData, null, 2)
-                );
-                const transaction = orderData.purchase_units[0].payments.captures[0];
-                alert(
-                    "Transaction " +
-                    transaction.status +
-                    ": " +
-                    transaction.id +
-                    "\n\nSee console for all available details"
-                );
-                // When ready to go live, remove the alert and show a success message within this page. For example:
-                // var element = document.getElementById('paypal-button-container');
-                // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-                // Or go to another URL:  actions.redirect('thank_you.html');
-            });
-    },
-})
-.render("#paypal-button-container");
+    .Buttons({
+        // Sets up the transaction when a payment button is clicked
+        createOrder: function () {
+            return fetch("/my-server/create-paypal-order", {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    // use the "body" param to optionally pass additional order information
+                    // like product skus and quantities
+                    body: JSON.stringify({
+                        cart: [{
+                            sku: "YOUR_PRODUCT_STOCK_KEEPING_UNITs",
+                            quantity: "YOUR_PRODUCT_QUANTITYs",
+                        }, ],
+                    }),
+                })
+                .then((response) => response.json())
+                .then((order) => order.id);
+        },
+        // Finalize the transaction after payer approval
+        onApprove: function (data) {
+            return fetch("/my-server/capture-paypal-order", {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        orderID: data.orderID,
+                    }),
+                })
+                .then((response) => response.json())
+                .then((orderData) => {
+                    modalFormulario.hide();
+                    pagado();
+                    // Successful capture! For dev/demo purposes:
+                    console.log(
+                        "Capture result",
+                        orderData,
+                        JSON.stringify(orderData, null, 2)
+                    );
+                    const transaction = orderData.purchase_units[0].payments.captures[0];
+                    alert(
+                        "Transaction " +
+                        transaction.status +
+                        ": " +
+                        transaction.id +
+                        "\n\nSee console for all available details"
+                    );
+                    // When ready to go live, remove the alert and show a success message within this page. For example:
+                    // var element = document.getElementById('paypal-button-container');
+                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+                });
+        },
+    })
+    .render("#paypal-button-container");

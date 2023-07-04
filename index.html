@@ -134,22 +134,25 @@
         </div>
     </div>
 
-    <!-- paginacion -->
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-end mt-5 pt-3">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
+    <div class="container-fluid">
+        <!-- paginacion -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end mt-5 pt-3">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
 
-    <div class="row mt-2 justify-content-center">
+    </div>
+
+    <div class="row mt-2 justify-content-center filtrosVarios">
         <!-- ordenar -->
         <div class="listaProductos">
             <div class="container-fluid justify-content-around row">
@@ -227,7 +230,7 @@
                                 <div class="invalid-feedback">Por favor, ingresa tu ciudad.</div>
                             </div>
                             <div class="form-group mt-2">
-                                <button type=" submit" href="./pages/carrito.html" name="enviar"
+                                <button type=" submit" href="./pages/carrito.html" id="enviarDatos" name="enviar"
                                     class="mt-5 btn btn-primary">Enviar</button>
                             </div>
                         </form>

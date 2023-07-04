@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+<body>
+    <div class="container">
+        <div class="card bg-white shadow-sm rounded">
+            <div class="card-body text-center">
+                <h2 class="mb-4">Carrito de Compras</h2>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card bg-white shadow-sm rounded">
+                            <div class="card-header">
+                                Datos del Cliente
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <strong>Nombre:</strong>
+                                        <span id="nombreLabel"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Apellido:</strong>
+                                        <span id="apellidoLabel"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Dirección:</strong>
+                                        <span id="direccionLabel"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Ciudad:</strong>
+                                        <span id="ciudadLabel"></span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Correo:</strong>
+                                        <span id="correoLabel"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card bg-white shadow-sm rounded mt-4">
+                            <div class="card-header">
+                                Detalles de los Productos
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bodyCarrito">
+                                        <!-- carrito -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2" class="text-end"><strong>Total:</strong></td>
+                                            <td id="total"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a type="button" class="btn btn-primary" href="../">Realizar Compra</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module" src="./js/carrito.js"></script>
+</body>
+
+</html>
