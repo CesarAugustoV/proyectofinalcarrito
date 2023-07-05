@@ -688,10 +688,7 @@ paypal
                     //     transaction.id +
                     //     "\n\nSee console for all available details"
                     // );
-                    // When ready to go live, remove the alert and show a success message within this page. For example:
-                    // var element = document.getElementById('paypal-button-container');
-                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-                    // Or go to another URL:  actions.redirect('thank_you.html');
+
                 });
         },
     })
