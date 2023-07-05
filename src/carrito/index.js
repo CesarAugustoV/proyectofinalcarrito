@@ -457,8 +457,6 @@ btnFiltrar.addEventListener('click', (event) => {
         return;
     }
 
-    console.log(precioMinimo, precioMaximo);
-
     const productosFiltrados = claseProductosManager.filtrar(categoria, precioMinimo, precioMaximo);
 
     mostrarProductosOrdenados(productosFiltrados);
@@ -563,15 +561,14 @@ const formatearFormulario = (form) => {
 
 
 const crearOrden = () => {
-
     const carrito = claseCarrito.consultarProductos();
     const total = claseCarrito.calcularTotal();
-
+    
     const formulario = document.querySelector('#myForm');
     const cancelarCompra = document.querySelector('#cancelarCompra');
-
+    
     formulario.addEventListener('submit', (ev) => {
-
+        ev.preventDefault();
         const formData = new FormData(formulario);
 
         let nombre = formData.get('nombre');
@@ -586,8 +583,6 @@ const crearOrden = () => {
 
         guardarLocal('orden', orden);
 
-        ev.preventDefault();
-
         for (const nodo of ev.target) {
             nodo.setAttribute("readonly", "");
         }
@@ -597,9 +592,10 @@ const crearOrden = () => {
 
         //mostrarbotones de paypal
         document.querySelector('#paypal-button-container').classList.remove("d-none");
-        cancelarCompra.classList.remove("d-none");
+        document.querySelector('#cancelarCompra').classList.remove("d-none");
 
         document.querySelector('#staticBackdropLabel').textContent = 'Metodo de pago';
+
     });
 
     cancelarCompra.addEventListener('click', () => {
@@ -653,7 +649,8 @@ paypal
                     // use the "body" param to optionally pass additional order information
                     // like product skus and quantities
                     body: JSON.stringify({
-                        cart: claseCarrito.consultarProductos()
+                        cart: claseCarrito.consultarProductos(),
+                        price: claseCarrito.calcularTotal()
                     }),
                 })
                 .then((response) => response.json())
@@ -678,21 +675,19 @@ paypal
 
                     pagado(transaction.id);
 
-
-
-                    // Successful capture! For dev/demo purposes:
-                    console.log(
-                        "Capture result",
-                        orderData,
-                        JSON.stringify(orderData, null, 2)
-                    );
-                    alert(
-                        "Transaction " +
-                        transaction.status +
-                        ": " +
-                        transaction.id +
-                        "\n\nSee console for all available details"
-                    );
+                    // // Successful capture! For dev/demo purposes:
+                    // console.log(
+                    //     "Capture result",
+                    //     orderData,
+                    //     JSON.stringify(orderData, null, 2)
+                    // );
+                    // alert(
+                    //     "Transaction " +
+                    //     transaction.status +
+                    //     ": " +
+                    //     transaction.id +
+                    //     "\n\nSee console for all available details"
+                    // );
                     // When ready to go live, remove the alert and show a success message within this page. For example:
                     // var element = document.getElementById('paypal-button-container');
                     // element.innerHTML = '<h3>Thank you for your payment!</h3>';

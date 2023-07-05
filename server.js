@@ -14,7 +14,8 @@ app.use(express.json());
 
 app.post("/my-server/create-paypal-order", async (req, res) => {
     try {
-        const order = await paypal.createOrder();
+        const price = req.body.price.toString();
+        const order = await paypal.createOrder(price);
         res.json(order);
     } catch (err) {
         res.status(500).send(err.message);
